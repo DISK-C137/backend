@@ -1,12 +1,12 @@
 <?php
-require(__DIR__ . '/config.php'); //เรียกใช้ไฟล์ config.php
+require(__DIR__ . '/config.php');
 
-//เขียน api
-header('Access-Control-Allow-Origin: *'); //ตั้งให้ API ถูกเข้าถึงได้ทั้งหมด
-header("Content-type: application/json; charset=utf-8"); //การเข้ารหัสเป็น UTF-8
-$arr = []; //ตัวแปรสำหรับเก็บข้อมูล
+header('Access-Control-Allow-Origin: *');
+header("Content-type: application/json; charset=utf-8");
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') { //check get POST
+$arr = [];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') { // ตรวจสอบว่าคำขอที่เข้ามาเป็นแบบ POST หรือไม่
     if (isset($_REQUEST['type']) and $_REQUEST['type'] != '' and !empty($_REQUEST['type'])) {
         if ($_REQUEST['type'] == 'all') {
             $res = $connect->query("SELECT u_username, u_name, u_create_at, u_id FROM users");
@@ -36,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { //check get POST
                 $arr['status'] = 'error';
                 $arr['msg'] = 'Username not found';
             }
-            //แก้ไข
         } elseif ($_REQUEST['type'] == 'update') {
             if (isset($_REQUEST['id']) and isset($_REQUEST['username']) and isset($_REQUEST['name'])) {
                 if ($_REQUEST['password'] != '' and isset($_REQUEST['password'])) {
@@ -59,7 +58,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { //check get POST
                 $arr['status'] = 'error';
                 $arr['msg'] = 'Username or password or name is Empty!';
             }
-            //เพิ่ม
         } elseif ($_REQUEST['type'] == 'insert') {
             if (isset($_REQUEST['username']) and isset($_REQUEST['password']) and isset($_REQUEST['name'])) {
                 $res_check = $connect->query("SELECT * FROM users WHERE u_username='" . $_REQUEST['username'] . "'");
@@ -85,7 +83,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { //check get POST
                 $arr['status'] = 'error';
                 $arr['msg'] = 'Username or password or name is Empty!';
             }
-            //ลบ
         } elseif ($_REQUEST['type'] == 'delete') {
             $res_check = $connect->query("SELECT * FROM users WHERE u_id='" . $_REQUEST['id'] . "'");
             if ($res_check->num_rows >= 1) {
