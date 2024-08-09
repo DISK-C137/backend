@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Users</title>
+
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="main" v-cloak>
+        <router-link class="btn btn-outline-dark" v-bind:to="{name:'home'}">Go to Home</router-link>/
+        <router-link v-bind:to="{name:'about'}">About</router-link>
+        <router-view></router-view>
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/vue-router@4.0.15/dist/vue-router.global.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+    <script>
+
+        const Home = {
+            template: `
+            <div class="row">
+                <div class="col">
+                    <div class="table-responsive">
+                        <hi v-bind:message="txt"></hi>
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 150px;">ชื่อผู้ใช้</th>
+                                    <th style="min-width: 150px;">ชื่อ</th>
+                                    <th style="min-width: 150px;">วันที่ลงทะเบียน</th>
+                                    <th style="min-width: 150px;">ตัวเลือก</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(row,key) in users" :key="key">
+                                    <td>{{row.u_username}}</td>
+                                    <td>{{row.u_name}}</td>
+                                    <td>{{row.u_create_at}}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-warning btn-sm">แก้ไข</button>
+                                        <button type="button" class="btn btn-outline-danger btn-sm">ลบ</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            `,
+            data() {
+                return {
+                    users: [],
+                    txt: "Hello World"
+                }
+            },
+            mounted() {
+                $.ajax({
+                    type: "POST",
+                    global: false,
+                    async: false,
+                    url: "http://localhost/backend/api.php",
+                    data: { type: "all" },
+                    success: (res) => {
+                        this.users = res.data
+                    },
+                    dataType: "json"
+                });
+                console.log(this.users)
+            }
+        }
+
+        const About = {
+            template: `<h1>about</h1>`
+        }
+
+        const routes = [
+            { path: '/', name: "home", component: Home },
+            { path: '/about', name: "about", component: About },
+        ];
+
+        const router = VueRouter.createRouter({
+            history: VueRouter.createWebHashHistory(),
+            routes,
+        })
+        const app = Vue.createApp({});
+        app.use(router)
+
+        app.mount('#main')
+    </script>
+</body>
+
+</html>
